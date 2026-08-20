@@ -1,6 +1,7 @@
 import { User } from "../models/User.models.js";
 import  bcrypt from "bcryptjs";
 import {generateAccesstoken, generateRefreshtoken} from "../utils/genrateTokens.utils.js"
+import  jwt  from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   try {
@@ -82,6 +83,7 @@ export const loginUser = async(req, res) => {
     })
 }
 
+
     // check password 
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("isMatch", isMatch);
@@ -107,6 +109,7 @@ export const loginUser = async(req, res) => {
         success:true,
         message:"User logged In",
         user,
+        role:user.role,
         accessToken,
     })
     
@@ -153,6 +156,83 @@ export const logoutUser = async(req, res) => {
         .json({
             success:false,
             message:`Internal Server Error ${error.message}`
+        })
+    }
+}
+
+export const refreshAccessToken = async(req, res) =>{
+    try{
+    // get data
+    const {refreshToken} = req.body;
+    
+    //validate
+
+    const user = await User.findOne({refreshToken});
+
+    if(!user){
+        return res.status(400)
+        .json({
+            success:false,
+            message:"Invalid refresh token"
+        })
+    }
+    
+    // verify refresh token
+    jwt.verify(
+        refreshToken, 
+        process.env.REFRESH_TOKEN_SECRET
+    );
+
+    // create nw accesstoken
+    const newAccessToken = generateAccesstoken(user);
+
+    // return res
+    return res.status(200)
+    .json({
+        success:true,
+        accessToken:newAccessToken
+    })
+}catch(error){
+    return res.status(500)
+    .json({
+        success:false,
+        message:`Internal Server Error ${error.message}`
+    })
+}
+
+}
+
+export const getUser = async(req, res) => {
+    try {
+        // get id
+        const {userId} = req.user.id;
+
+        // validate
+
+        const user = await User.findOne(userId).select("-password -refreshToken");
+
+        if(!user){
+            return res.status(400)
+            .json({
+                success:false,
+                message:"User not found"
+            })
+        }
+
+        // return user;
+
+        return res.status(200)
+        .json({
+            success:true,
+            message:"User found",
+            user
+        })
+
+    } catch (error) {
+        return res.status(500)
+        .json({
+            success:false,
+            message:`Internal server Error ${error.message}`
         })
     }
 }
