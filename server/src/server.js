@@ -9,14 +9,11 @@ dotenv.config({ path: "./.env" });
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
-cloudinary.config({
-    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
-    cloud_api:process.env.CLOUDINARY_API_KEY,
-    cloud_secret:process.env.CLOUDINARY_API_SECRET
-})
+
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/event", eventRoutes)

@@ -1,14 +1,13 @@
 import { Event } from "../models/Event.models.js";
+import { uploadImages } from "../utils/upload.utils.js";
 
 export const registerEvent = async (req, res) => {
   try {
     // event details
     const {
       title,
-      descripiton,
-      organizer,
-      category,
-      image,
+      description,
+      // category,
       date,
       startTime,
       endTime,
@@ -16,18 +15,37 @@ export const registerEvent = async (req, res) => {
       price,
       capacity,
       availableSeats,
-      tag,
       status,
     } = req.body;
+    const organizer = req.user.id;
 
+ 
+
+    // image upload
+     let imageUrl = null;
+    if (req.file?.path) {
+      imageUrl = await uploadImages(req.file.path); 
+    } 
+    console.log("imageUrl ", imageUrl);
+    console.log("req.file.path:", req.file?.path);
+    // seat limit
+
+    if(availableSeats > capacity){
+      return res.status(400)
+      .json({
+        success:false,
+        message:"Seats are not available"
+      })
+    }
+    
     // create event
 
     const event = await Event.create({
       title,
       description,
       organizer,
-      category,
-      image,
+      // category,
+      image:imageUrl,
       date,
       startTime,
       endTime,
@@ -35,6 +53,7 @@ export const registerEvent = async (req, res) => {
       price,
       capacity,
       availableSeats,
+      status
     });
 
     if (!event) {
@@ -46,12 +65,13 @@ export const registerEvent = async (req, res) => {
 
     // return res
 
-    return res.startTime(201).json({
+    return res.status(201).json({
       success: true,
       message: "Event registered successfuly",
       event,
     });
   } catch (error) {
+    console.log(`Register event error ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",

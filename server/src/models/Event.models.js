@@ -19,7 +19,7 @@ const eventSchema = new mongoose.Schema({
     category:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Category",
-        required:true
+        // required:true
     },
     image:{
         type:String,
@@ -57,7 +57,8 @@ const eventSchema = new mongoose.Schema({
     },
     status:{
         type:String,
-
+        enum:["Draft", "Published", "Cancelled"],
+        default:"Draft"
     },
 
 }, {timestamps:true});
