@@ -1,5 +1,6 @@
 import { Event } from "../models/Event.models.js";
 import { uploadImages } from "../utils/upload.utils.js";
+import { Category } from "../models/Category.models.js";
 
 export const registerEvent = async (req, res) => {
   try {
@@ -7,7 +8,7 @@ export const registerEvent = async (req, res) => {
     const {
       title,
       description,
-      // category,
+      category,
       date,
       startTime,
       endTime,
@@ -15,19 +16,21 @@ export const registerEvent = async (req, res) => {
       price,
       capacity,
       availableSeats,
+      tags,
       status,
     } = req.body;
     const organizer = req.user.id;
-
+    
+    // validate
+    if(!organizer){
+      return res.status(400)
+      .json({
+        success:false,
+        message:"Unauthorize request"
+      })
+    }
  
-
-    // image upload
-     let imageUrl = null;
-    if (req.file?.path) {
-      imageUrl = await uploadImages(req.file.path); 
-    } 
-    console.log("imageUrl ", imageUrl);
-    console.log("req.file.path:", req.file?.path);
+    
     // seat limit
 
     if(availableSeats > capacity){
@@ -37,14 +40,23 @@ export const registerEvent = async (req, res) => {
         message:"Seats are not available"
       })
     }
-    
+
+        // image upload
+     let imageUrl = null;
+    if (req.file?.path) {
+      imageUrl = await uploadImages(req.file.path); 
+    } 
+    const categoryDoc = await Category.findOne({ name: category });
+if (!categoryDoc) {
+  return res.status(400).json({ success: false, message: "Category not found" });
+}
     // create event
 
     const event = await Event.create({
       title,
       description,
       organizer,
-      // category,
+      category: categoryDoc._id,
       image:imageUrl,
       date,
       startTime,
@@ -53,7 +65,8 @@ export const registerEvent = async (req, res) => {
       price,
       capacity,
       availableSeats,
-      status
+      tags,
+      status: status === "Published" ? "Published" : "Draft"
     });
 
     if (!event) {

@@ -3,20 +3,21 @@ import dotenv from "dotenv"
 import { connectDB } from "./config/db.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { eventRoutes } from "./routes/event.routes.js";
-import { v2 as cloudinary } from "cloudinary";
+import { categoryRoutes } from "./routes/category.routes.js";
 dotenv.config({ path: "./.env" });
 
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); 
 
 connectDB();
 
 
 
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/event", eventRoutes)
+app.use("/api/v1/event", eventRoutes);
+app.use("/api/v1/category", categoryRoutes);
 
 const port = process.env.port || 5000;
 
