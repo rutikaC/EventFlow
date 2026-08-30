@@ -26,16 +26,20 @@ export const auth = async (req, res, next) => {
         accessToken, 
         process.env.ACCESS_TOKEN_SECRET
     );
-    
+
   
     req.user = decoded;
+
     next();
+
   } catch (error) {
+   
     console.log(`Auth controller error: ${error.message}`);
     return res.status(401)
     .json({
         success:false,
         message: `Invalid access token`
     });
+   
   }
 };
