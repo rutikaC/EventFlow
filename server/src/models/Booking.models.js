@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const bookingSchem = new mongoose.Schema({
+const bookingSchema = new mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
@@ -27,7 +27,7 @@ const bookingSchem = new mongoose.Schema({
     },
     bookingStatus:{
         type:String,
-        enum:["pending" , "confirmed", "cancelled"];
+        enum:["pending" , "confirmed", "cancelled"],
         default:"pending",
     },
     paymentId:{
@@ -38,4 +38,4 @@ const bookingSchem = new mongoose.Schema({
     }
 }, {timeseries: true});
 
-export const booking = mongoose.model("Booking", bookingSchem);
+export const Booking = mongoose.model("Booking", bookingSchema);
