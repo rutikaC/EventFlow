@@ -202,37 +202,3 @@ export const refreshAccessToken = async(req, res) =>{
 
 }
 
-export const getUser = async(req, res) => {
-    try {
-        // get id
-        const {userId} = req.user.id;
-
-        // validate
-
-        const user = await User.findOne(userId).select("-password -refreshToken");
-
-        if(!user){
-            return res.status(400)
-            .json({
-                success:false,
-                message:"User not found"
-            })
-        }
-
-        // return user;
-
-        return res.status(200)
-        .json({
-            success:true,
-            message:"User found",
-            user
-        })
-
-    } catch (error) {
-        return res.status(500)
-        .json({
-            success:false,
-            message:`Internal server Error ${error.message}`
-        })
-    }
-}

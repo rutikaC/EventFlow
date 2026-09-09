@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema({
         trim:true,
         maxlenght:8
     },
+    newPassword:{
+        type:String,
+        trim:true,
+        maxlenght:8
+    },
+    profileImage:{
+        type:String,
+    },
     role:{
         type:String,
         enum:["user", "organizer"],

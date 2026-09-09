@@ -1,6 +1,5 @@
 import express, { raw } from "express"
 import {
-    getUser,
      loginUser, 
      logoutUser,
      refreshAccessToken, 
@@ -14,4 +13,3 @@ authRoutes.post("/register", registerUser);
 authRoutes.post("/login", loginUser);
 authRoutes.post("/logout", logoutUser);
 authRoutes.post("/refresh", refreshAccessToken);
-authRoutes.get("/user/profile", auth, getUser);
