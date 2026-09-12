@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/User.models.js";
 import { uploadImages } from "../utils/upload.utils.js";
 import { generateRefreshtoken } from "../utils/genrateTokens.utils.js";
+import { sendEmail} from "../utils/sendEmail.js"
 
 export const getUser = async (req, res) => {
   try {
@@ -193,6 +194,14 @@ export const requestPasswordReset = async(req, res) => {
         const resetToken = generateRefreshtoken(user);
 
          console.log(`Reset link: http://localhost:5000/auth/reset-password/${resetToken}`);
+          const resetUrl = `http://localhost:5000/auth/reset-password/${resetToken}`;
+          const message = `You requested a password reset.\n\nClick here: ${resetUrl}\n\nThis link expires in 15 minutes.`;
+
+          await sendEmail({
+            to:user.email,
+            subject:"Password Reset Request",
+            text: message
+          })
         // validate
 
         return res.status(200)
@@ -201,7 +210,13 @@ export const requestPasswordReset = async(req, res) => {
             message:"Reset link sent"
         })
     } catch (error) {
-        
+        console.log(`reset password request error : ${error.message}`);
+
+        return res.status(500)
+        .json({
+            success:false,
+            message:"Internal Server Error"
+        })
     }
 }
 
