@@ -10,11 +10,12 @@ import {razorpayPayment} from "./utils/razorpay.utils.js"
 import { userRoutes } from "./routes/user.routes.js";
 import { reviewRoutes } from "./routes/review.routes.js";
 dotenv.config({ path: "./.env" });
-
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
+app.use(cookieParser());
 
 connectDB();
 razorpayPayment;

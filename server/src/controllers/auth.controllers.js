@@ -103,6 +103,13 @@ export const loginUser = async(req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
+    // set refresh token http only
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+    })
+
     // return res
     return res.status(200)
     .json({
@@ -140,9 +147,12 @@ export const logoutUser = async(req, res) => {
         })
     }
         
-        // remvoe refreshtoken
-        user.refreshToken = null
-        await user.save();
+        // remove refreshtoken
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "Strict",
+        })
 
         // return resposne
         return res.status(200)
