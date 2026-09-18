@@ -17,4 +17,5 @@ userRoutes.put("/update/profile/:userId", auth, upload.single("profileImage"),  
 userRoutes.delete("/delete/profile/:userId", auth, deleteProfile);
 userRoutes.put("/update/password/:userId", auth, updatePassword);
 userRoutes.post("/forget/password",  requestPasswordReset);
-userRoutes.patch("/reset/password/:token", resetPassword)
+userRoutes.patch("/reset/password/:token", resetPassword);
+

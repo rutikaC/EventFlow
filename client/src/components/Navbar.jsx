@@ -7,11 +7,14 @@ import { MdDarkMode } from "react-icons/md";
 import { CiLight } from "react-icons/ci";
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import Register from '../pages/Register';
+import Modal from "../components/Modal"
 
 const Navbar = () => {
 
     const[isOpen, setIsOpen] = useState(false);
     const {theme, toggleTheme} = useTheme();
+    const [showRegister, setShowRegister] = useState(false);
 
 
   return (
@@ -88,9 +91,13 @@ const Navbar = () => {
             
             <Link>
             <button
+            onClick={() => setShowRegister(true)}
             className='text-white text-sm bg-red-600 p-1 rounded shadow hover:bg-red-500'>
                 Sing Up
             </button>
+             <Modal show={showRegister} onClose={() => setShowRegister(false)}>
+                <Register/>
+             </Modal>
             </Link>
 
             <Link>
@@ -137,11 +144,14 @@ const Navbar = () => {
                 </li>
                 <li>
                     <Link>
-                    <button
+                    <button onClick={() => setShowRegister(true)}
                     className='text-white text-sm bg-red-600 p-1 rounded shadow hover:bg-red-500'
                     >
                         Sign Up
                     </button>
+                    <Modal show={showRegister} onClose={() => setShowRegister(false)}>
+                    <Register/>
+                    </Modal>
                     </Link>
                 </li>
                 <li>

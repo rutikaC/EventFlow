@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema({
         trim:true,
         maxlenght:8
     },
+    googleId:{
+        type:String,
+        unique:true,
+        sparse:true
+    },
     profileImage:{
         type:String,
     },
