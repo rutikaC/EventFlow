@@ -138,7 +138,8 @@ export const getEventById = async (req, res) => {
     const { eventId } = req.params;
 
     // find event
-    const event = await Event.findById(eventId);
+    const event = await Event.findById(eventId)
+    .populate("organizer", "name");
 
     // validate
 

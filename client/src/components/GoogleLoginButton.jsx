@@ -1,4 +1,4 @@
-
+import api from "../services/api.js"
 import { useEffect, useRef } from 'react';
 
 const GoogleLoginButton = () => {
@@ -15,10 +15,10 @@ const GoogleLoginButton = () => {
                 try {
                     console.log("Google credential:", response.credential);
 
-                    const res = await api.post("/user/google-login", {
+                    const res = await api.post("/auth/google/register", {
                         credential: response.credential,
                     })
-
+                    console.log(res)
                     console.log("Backend response", res.data);
 
                     // save token 
@@ -30,7 +30,7 @@ const GoogleLoginButton = () => {
                     console.log("google login error", error.response?.data || error.message);
                 }
             }
-        });
+        },[]);
         window.google.accounts.id.renderButton(
             googleButtonRef.current,
             {

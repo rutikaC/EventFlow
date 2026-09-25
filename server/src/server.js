@@ -1,5 +1,7 @@
 import express from "express";
 import dotenv from "dotenv"
+import cors from "cors"
+import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { eventRoutes } from "./routes/event.routes.js";
@@ -10,9 +12,14 @@ import {razorpayPayment} from "./utils/razorpay.utils.js"
 import { userRoutes } from "./routes/user.routes.js";
 import { reviewRoutes } from "./routes/review.routes.js";
 dotenv.config({ path: "./.env" });
-import cookieParser from "cookie-parser";
+
 
 const app = express();
+
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 app.use(cookieParser());

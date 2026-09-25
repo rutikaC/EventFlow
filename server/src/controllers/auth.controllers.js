@@ -131,44 +131,6 @@ export const loginUser = async(req, res) => {
 }
 
 
-export const logoutUser = async(req, res) => {
-    try {
-        // get userid
-        const {userId} = req.params;
-
-        // find user
-        const user = await User.findOne({userId});
-        
-        if(!user){
-         return res.status(404)
-        .json({
-            success:false,
-            message:"user not found"
-        })
-    }
-        
-        // remove refreshtoken
-        res.clearCookie("refreshToken", {
-            httpOnly: true,
-            secure: true,
-            sameSite: "Strict",
-        })
-
-        // return resposne
-        return res.status(200)
-        .json({
-            success:true,
-            message:"user Logged out"
-        })
-
-    } catch (error) {
-        return res.status(500)
-        .json({
-            success:false,
-            message:`Internal Server Error ${error.message}`
-        })
-    }
-}
 
 export const refreshAccessToken = async(req, res) =>{
     try{
