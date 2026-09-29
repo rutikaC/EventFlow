@@ -16,20 +16,6 @@ export const eventSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(registerEvent.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(registerEvent.fulfilled, (state, action) => {
-        state.status = "success";
-        state.accessToken = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
-        state.error = null;
-      })
-      .addCase(registerEvent.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
 
       // getEvents
       .addCase(getEvents.pending, (state) => {
@@ -57,6 +43,23 @@ export const eventSlice = createSlice({
         state.error = null;
       })
       .addCase(getEventById.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+
+      // crete Event
+
+      .addAsyncThunk(registerEvent.pending,(state) => {
+        state.status = "loding";
+        state.error = null;
+      })
+      .addCase(registerEvent.fulfilled, (state, action) => {
+        state.status= "success";
+        state.event = action.payload.event;
+        state.error = null;
+      })
+      .addCase(registerEvent.rejected, (state,action) => {
         state.status = "failed";
         state.error = action.payload;
       })
