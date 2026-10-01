@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios, { create } from "axios";
 import toast from "react-hot-toast";
 import api from "../../services/api.js";
 
@@ -29,6 +29,56 @@ export const registerEvent = createAsyncThunk(
   },
 );
 
+
+export const getMyEvents = createAsyncThunk(
+  "events/getMyEvents",
+  async(_, {rejectWithValue}) => {
+    try {
+
+      const token= localStorage.getItem("token");
+
+      const res = await api.get("/event/my-events",{
+        headers:{
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials:true,
+      })
+      console.log("res", res.data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to fetch your events"
+      )
+    }
+  }
+)
+
+
+export const updateEvent =createAsyncThunk(
+  "event/updateEvent",
+  async({eventId , formData}, {rejectWithValue}) => {
+    try {
+      const token = localStorage.getItem("token");
+  
+      const res = await api.put(`/event/update/${eventId}`, 
+        formData, {
+        withCredentials:true,
+        headers:{
+            Authorization: `Bearer ${token}`
+        }
+      });
+      toast.success("Event successfully updated")
+    } catch (error) {
+      console.log(error)
+      toast.error("Event update failed");
+      return rejectWithValue(
+        error?.response?.data?.message ||"Event update failed"
+      )
+    }
+  }
+)
+
+
 export const getEvents = createAsyncThunk(
   "events/getEvents",
   async (_, { rejectWithValue }) => {
@@ -53,7 +103,7 @@ export const getEvents = createAsyncThunk(
 );
 
 export const getEventById = createAsyncThunk(
-  "events/getEventByI",
+  "events/getEventById",
   async (eventId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");

@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getEventById, getEvents, registerEvent } from "./eventApi.js";
+import { getEventById, getEvents, getMyEvents, registerEvent, updateEvent } from "./eventApi.js";
 
 const initialState = {
   events: [],
+  myEvents:[],
   event: null,
   accessToken: null,
   refreshToken: null,
@@ -50,7 +51,7 @@ export const eventSlice = createSlice({
 
       // crete Event
 
-      .addAsyncThunk(registerEvent.pending,(state) => {
+      .addCase(registerEvent.pending,(state) => {
         state.status = "loding";
         state.error = null;
       })
@@ -61,6 +62,37 @@ export const eventSlice = createSlice({
       })
       .addCase(registerEvent.rejected, (state,action) => {
         state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // update
+
+      .addCase(updateEvent.pending, (state) => {
+        state.status = "loading";
+        state.error = null
+      })
+      .addCase(updateEvent.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.event = action.payload.event;
+        state.error = null;
+      })
+      .addCase(updateEvent.rejected, (state, action) => {
+        state.status= "failed";
+        state.error = action.payload
+      })
+
+      // my events
+      
+      .addCase(getMyEvents.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(getMyEvents.fulfilled, (state, action)=> {
+        state.status= "succeeded";
+        state.myEvents = action.payload.events;
+      })
+      .addCase(getMyEvents.rejected, (state, action) => {
+        state.status= "failed";
         state.error = action.payload;
       })
   },

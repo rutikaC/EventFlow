@@ -2,6 +2,8 @@ import { User } from "../models/User.models.js";
 import  bcrypt from "bcryptjs";
 import {generateAccesstoken, generateRefreshtoken} from "../utils/genrateTokens.utils.js"
 import  jwt  from "jsonwebtoken";
+import cookie from "cookie-parser"
+
 
 export const registerUser = async (req, res) => {
   try {
@@ -46,6 +48,13 @@ export const registerUser = async (req, res) => {
     await user.save();
 
   const safeUser = await User.findById(user._id).select("-password -refreshToken");
+
+    // store cookie
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+    });
+
     // return res
 
     return res.status(201)
@@ -54,7 +63,7 @@ export const registerUser = async (req, res) => {
         message:"User Registered",
         user:safeUser, 
         accessToken,
-        refreshToken
+        
     })
   } catch (error) {
     console.log(`Register user error: ${error.message}`);
@@ -135,7 +144,7 @@ export const loginUser = async(req, res) => {
 export const refreshAccessToken = async(req, res) =>{
     try{
     // get data
-    const {refreshToken} = req.body;
+    const refreshToken = req.cookie.refreshToken;
     
     //validate
 

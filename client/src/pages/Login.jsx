@@ -24,13 +24,20 @@ const Login = ({setShowLogin}) => {
   const handleSubmit = async(e) => {
     try {
       e.preventDefault();
-      await dispatch(loginUser(formData)).unwrap();
-
+     const result =  await dispatch(loginUser(formData)).unwrap();
+      
+     console.log("LOGIN RESULT:", result);
+    console.log("USER ROLE:", result.role);
+     
       setShowLogin(false);
+      if(result.role === "organizer"){
+        navigate("/create/event")
+      }else if(result.role === "user"){
       navigate("/events");
+      }
 
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      console.log("Login failed:", error);
     }
   }
 

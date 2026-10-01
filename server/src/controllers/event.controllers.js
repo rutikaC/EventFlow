@@ -9,6 +9,7 @@ export const registerEvent = async (req, res) => {
     // event details
     const {
       title,
+      description,
       category,
       date,
       startTime,
@@ -32,39 +33,63 @@ export const registerEvent = async (req, res) => {
 
     // seat limit
 
-    if (availableSeats > capacity) {
+    if (Number(availableSeats) > Number(capacity)) {
       return res.status(400).json({
         success: false,
         message: "Seats are not available",
       });
     }
 
-    // generate descripiton
-    const description = await generateEventDescription({
-      title,
-      category,
-      venue,
-      date,
-      startTime,
-      endTime,
-      tags,
-    });
-    // image upload
-    let imageUrl = null;
-    if (req.file?.path) {
-      imageUrl = await uploadImages(req.file.path);
-    }
+    // category
+
     const categoryDoc = await Category.findOne({ name: category });
     if (!categoryDoc) {
       return res
         .status(400)
         .json({ success: false, message: "Category not found" });
     }
+
+    // generate descripiton
+    let finalDescription = description?.trim();
+
+    if(!finalDescription){
+      try {
+        
+        finalDescription = await generateEventDescription({
+          title,
+          category:categoryDoc.name,
+          venue,
+          date,
+          startTime,
+          endTime,
+          tags
+        });
+
+      } catch (error) {
+        
+        console.log(`Ai descritpion error`, error.message);
+
+        return res.status(503)
+        .json({
+          success:false,
+          message:"Ai descrtipion generation is temporarily unavailable"
+        })
+      }
+    }
+
+
+
+    // image upload
+    let imageUrl = null;
+    if (req.file?.path) {
+      imageUrl = await uploadImages(req.file.path);
+    }
+  
     // create event
 
     const event = await Event.create({
       title,
-      description,
+      description:finalDescription,
       organizer,
       category: categoryDoc._id,
       image: imageUrl,
@@ -376,3 +401,4 @@ export const updateEventStatus = async(req, res) => {
     });
   }
 }
+

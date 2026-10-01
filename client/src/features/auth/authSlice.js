@@ -8,7 +8,6 @@ import { loginUser, registerUser } from "./authApi";
 const initialState = {
     user: null,
     accessToken: localStorage.getItem("token") || null,
-    refreshToken:null,
     status: "idle",
     error: null,
 };
@@ -16,10 +15,7 @@ const initialState = {
 export const  authSlice = createSlice({
     name:"auth",
     initialState,
-    reducers:{
-
-
-    },
+    reducers:{},
     extraReducers: (builder) => {
         builder
         .addCase(registerUser.pending, (state, action)=> {
@@ -27,16 +23,19 @@ export const  authSlice = createSlice({
             state.error = null;
         })
         .addCase(registerUser.fulfilled, (state, action) => {
+            state.status = "succeeded"
             state.user = action.payload.user;
             state.accessToken= action.payload.accessToken;
             localStorage.setItem("token", action.payload.accessToken);
-            state.refreshToken= action.payload.refreshToken;
-            state.error = action.payload;
+            state.error = null;
         })
         .addCase(registerUser.rejected, (state, action)=> {
             state.status = "failed";
             state.error = action.payload;
         })
+
+        // login
+
         .addCase(loginUser.pending, (state, action) => {
             state.status = "loading",
             state.error = null;
@@ -46,8 +45,7 @@ export const  authSlice = createSlice({
             state.user = action.payload.user;
             state.accessToken = action.payload.accessToken;
             localStorage.setItem("token", action.payload.accessToken)
-            state.refreshToken = action.payload.refreshToken;
-            state.error= action.error;
+            state.error= null;
         })
         .addCase(loginUser.rejected, (state, action) => {
             state.status = "failed";

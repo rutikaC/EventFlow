@@ -11,6 +11,8 @@ api.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
+},(error) => {
+    return Promise.reject(error);
 })
 
 api.interceptors.response.use((response) => 
@@ -19,22 +21,25 @@ api.interceptors.response.use((response) =>
        
         const originalRequest = error.config;
 
-        if(error.response?.status === 401 && !originalRequest._retry){
+        if(error.response?.status === 401 && !originalRequest?._retry){
             originalRequest._retry = true;
 
             try {
-                const refreshToken = localStorage.getItem("refreshToken");
-                const res = await api.post("/auth/refresh", {refreshToken});
+                const res = await axios.post(
+                    `${import.meta.env.VITE_API_BASE_URL}/users/refresh-token`, 
+                    {},
+                    {withCredentials: true});
 
                 const newAccessToken = res.data.accessToken;
                 localStorage.setItem("token", newAccessToken);
 
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return api(originalRequest);
-            } catch (error) {
+            } catch (refreshError) {
                 localStorage.removeItem("token");
-                localStorage.removeItem("refreshToken");
+               
                 window.location.href = "/login";
+                return Promise.reject(refreshError);
             }
         }
             return Promise.reject(error);
