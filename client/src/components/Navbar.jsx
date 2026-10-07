@@ -58,20 +58,49 @@ const Navbar = () => {
               className={({ isActive }) =>
                 isActive
                   ? "text-red-600 font-semibold"
-                  : "text-black hover:text-red-500 "
+                  : "text-black dark:text-white hover:text-red-500 "
               }
             >
               Events
             </NavLink>
           </li>
           <li>
-            <NavLink>Bookings</NavLink>
+            <NavLink
+            to="/booking"
+             className={({ isActive }) =>
+                isActive
+                  ? "text-red-600 font-semibold"
+                  : "text-black dark:text-white  hover:text-red-500 "
+                 
+              }>
+              Bookings
+            </NavLink>
           </li>
           <li>
-            <NavLink>About</NavLink>
+            <NavLink
+            to="/about"
+            className={({ isActive }) =>
+                isActive
+                  ? "text-red-600 font-semibold"
+                  : "text-black dark:text-white  hover:text-red-500 "
+                 
+              }
+              >
+              About
+            </NavLink>
           </li>
           <li>
-            <NavLink>Contact</NavLink>
+            <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+                isActive
+                  ? "text-red-600 font-semibold"
+                  : "text-black dark:text-white  hover:text-red-500 "
+                 
+              }
+              >
+              Contact
+            </NavLink>
           </li>
         </ul>
       </div>
@@ -129,22 +158,55 @@ const Navbar = () => {
         >
           <ul className="flex flex-col items-center gap-4 py-4 ">
             <li>
-              <NavLink to="/events" onClick={() => setIsOpen(false)}>
+              <NavLink to="/events" 
+              onClick={() => setIsOpen(false)}
+            className={({ isActive }) =>
+                isActive
+                  ? "text-red-600 font-semibold"
+                  : "text-black dark:text-white  hover:text-red-500 "
+                 
+              }
+              >
                 Events
               </NavLink>
             </li>
             <li>
-              <NavLink to="/events" onClick={() => setIsOpen(false)}>
+              <NavLink to="/booking" 
+              onClick={() => setIsOpen(false)}
+            className={({ isActive }) =>
+                isActive
+                  ? "text-red-600 font-semibold"
+                  : "text-black dark:text-white  hover:text-red-500 "
+                 
+              }
+              >
                 Bookings
               </NavLink>
             </li>
             <li>
-              <NavLink to="/events" onClick={() => setIsOpen(false)}>
+              <NavLink to="/events" 
+              onClick={() => setIsOpen(false)}
+            className={({ isActive }) =>
+                isActive
+                  ? "text-red-600 font-semibold"
+                  : "text-black dark:text-white  hover:text-red-500 "
+                 
+              }
+              >
                 About
               </NavLink>
             </li>
             <li>
-              <NavLink to="/events" onClick={() => setIsOpen(false)}>
+              <NavLink to="/events" 
+              onClick={() => setIsOpen(false)}
+             
+            className={({ isActive }) =>
+                isActive
+                  ? "text-red-600 font-semibold"
+                  : "text-black dark:text-white  hover:text-red-500 "
+                 
+              }
+              >
                 Contact
               </NavLink>
             </li>

@@ -6,6 +6,7 @@ import { getEvents } from '../features/events/eventApi';
 const Events = () => {
   const dispatch = useDispatch();
   const {events = [], status, error} = useSelector((state) => state.events);
+
  console.log("Events data:", events)
   useEffect(() => {
     dispatch(getEvents());
@@ -14,7 +15,7 @@ const Events = () => {
   if(status === "loading") return <p>Loading events...</p>
   if(status === "failed") return  <p>Error: {error}</p>
   return (
-    <div className="flex flex-col
+    <div className="flex flex-col justify-center items-center
     dark:bg-gray-900 dark:text-white">
        
        <div>

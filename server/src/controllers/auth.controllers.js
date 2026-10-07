@@ -2,7 +2,7 @@ import { User } from "../models/User.models.js";
 import  bcrypt from "bcryptjs";
 import {generateAccesstoken, generateRefreshtoken} from "../utils/genrateTokens.utils.js"
 import  jwt  from "jsonwebtoken";
-import cookie from "cookie-parser"
+import cookies from "cookie-parser"
 
 
 export const registerUser = async (req, res) => {
@@ -50,9 +50,12 @@ export const registerUser = async (req, res) => {
   const safeUser = await User.findById(user._id).select("-password -refreshToken");
 
     // store cookie
-    res.cookie("refreshToken", refreshToken, {
+    res.cookies("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite:
+        process.env.NODE_ENV === "prodution" ? "none" : "lax",
+        maxAge: 7* 24* 60 *60 * 1000,
     });
 
     // return res
@@ -95,7 +98,7 @@ export const loginUser = async(req, res) => {
 
     // check password 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("isMatch", isMatch);
+    // console.log("isMatch", isMatch);
 
     if(!isMatch){
         return res.status(400)
@@ -116,7 +119,10 @@ export const loginUser = async(req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite:
+        process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
     })
 
     // return res
@@ -144,7 +150,7 @@ export const loginUser = async(req, res) => {
 export const refreshAccessToken = async(req, res) =>{
     try{
     // get data
-    const refreshToken = req.cookie.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
     
     //validate
 

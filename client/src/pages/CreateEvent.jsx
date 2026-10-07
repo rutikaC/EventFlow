@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
@@ -7,17 +7,15 @@ import {
   getMyEvents,
   getEventById,
   updateEvent,
+  deleteEvent,
 } from "../features/events/eventApi.js";
 
 const CreateEvent = () => {
   const dispatch = useDispatch();
 
-  const {
-    status,
-    error,
-    myEvents,
-    event,
-  } = useSelector((state) => state.events);
+  const { status, error, myEvents, event } = useSelector(
+    (state) => state.events,
+  );
 
   const [mode, setMode] = useState("new");
   const [selectEvent, setSelectEvent] = useState(null);
@@ -36,8 +34,6 @@ const CreateEvent = () => {
     category: "",
   });
 
-
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -46,8 +42,6 @@ const CreateEvent = () => {
       [name]: value,
     }));
   };
-
-
 
   const handleNewEvent = () => {
     setMode("new");
@@ -76,9 +70,12 @@ const CreateEvent = () => {
   };
 
   const handleGetEvents = () => {
-    
     dispatch(getMyEvents());
-  }
+  };
+
+  const handleDeleteEvent = (eventId) => {
+    dispatch(deleteEvent(eventId));
+  };
 
   const handleSelectEvent = (eventId) => {
     setSelectEvent(eventId);
@@ -87,13 +84,12 @@ const CreateEvent = () => {
   };
 
   const formatTime = (time) => {
-
     const cleanedTime = time.trim().replace(/\s+/g, "");
 
-    const[hours, minutes] = cleanedTime.split(":");
-    if(!hours || !minutes) return "";
+    const [hours, minutes] = cleanedTime.split(":");
+    if (!hours || !minutes) return "";
     return `${hours.padStart(2, "0")}: ${minutes.padStart(2, "0")}`;
-  }
+  };
 
   useEffect(() => {
     if (mode === "edit" && event && selectEvent) {
@@ -120,7 +116,6 @@ const CreateEvent = () => {
     }
   }, [event, mode, selectEvent]);
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -134,34 +129,28 @@ const CreateEvent = () => {
 
     if (mode === "new") {
       dispatch(registerEvent(data));
-    }
-
-    else if (mode === "edit") {
+    } else if (mode === "edit") {
       dispatch(
         updateEvent({
           eventId: selectEvent,
           formData: data,
-        })
+        }),
       );
     }
   };
 
   return (
     <div className="flex flex-col w-full min-h-screen dark:bg-gray-900 dark:text-white">
-
       <div className="flex">
-
-
         <div
           className="border border-gray-200 shadow w-1/4 min-h-screen
           dark:border-gray-700 dark:bg-gray-900"
         >
-          <h2 className="text-xl font-semibold text-center p-5">
+          <h2 className="font-light text-xl text-center p-5">
             Event Management
           </h2>
 
           <ul className="flex flex-col gap-3 px-4">
-
             {/* NEW */}
 
             <li>
@@ -195,31 +184,17 @@ const CreateEvent = () => {
                 Edit Event
               </button>
             </li>
+
             
-            <li>
-              <button
-              type="button"
-              onClick={handleGetEvents}
-              className={`w-full text-left p-3 rounded`}
-              >
-                GET  EVENTS
-              </button>
-              <button>
-                <RiDeleteBin6Line />
-              </button>
-            </li>
           </ul>
         </div>
 
-
         <div className="w-full ml-4 mr-4 mt-4">
-
           {mode === "edit" && !selectEvent && (
             <div
               className="border border-gray-200 shadow p-5 rounded
               dark:border-gray-700"
             >
-
               <h2 className="text-xl font-semibold mb-5">
                 Select Event to Edit
               </h2>
@@ -227,18 +202,12 @@ const CreateEvent = () => {
               {/* LOADING */}
 
               {status === "loading" && (
-                <p className="text-gray-500">
-                  Loading your events...
-                </p>
+                <p className="text-gray-500">Loading your events...</p>
               )}
 
               {/* ERROR */}
 
-              {error && (
-                <p className="text-red-500 mb-3">
-                  {error}
-                </p>
-              )}
+              {error && <p className="text-red-500 mb-3">{error}</p>}
 
               {/* EVENTS */}
 
@@ -249,60 +218,57 @@ const CreateEvent = () => {
               )}
 
               <div className="flex flex-col gap-3">
-
                 {myEvents?.map((item) => (
-                  <button
+                  <div
                     key={item._id}
-                    type="button"
-                    onClick={() => handleSelectEvent(item._id)}
-                    className="w-full text-left border border-gray-200
-                    p-4 rounded-lg
-                    hover:bg-gray-100
-                    dark:border-gray-700
-                    dark:hover:bg-gray-800"
+                    className="flex items-center border border-gray-200 rounded-lg
+               hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
                   >
+                    {/* Select Event */}
+                    <button
+                      type="button"
+                      onClick={() => handleSelectEvent(item._id)}
+                      className="flex-1 text-left p-4"
+                    >
+                      <h3 className="font-semibold text-lg">{item.title}</h3>
 
-                    <h3 className="font-semibold text-lg">
-                      {item.title}
-                    </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {item.venue}
+                      </p>
 
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {item.venue}
-                    </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {item.date
+                          ? new Date(item.date).toLocaleDateString()
+                          : ""}
+                      </p>
+                    </button>
 
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {item.date
-                        ? new Date(item.date).toLocaleDateString()
-                        : ""}
-                    </p>
-
-                  </button>
+                    {/* Delete */}
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteEvent(item._id)}
+                      className="p-4 text-red-500 hover:text-red-700"
+                    >
+                      <RiDeleteBin6Line size={20} />
+                    </button>
+                  </div>
                 ))}
-
               </div>
             </div>
           )}
-
-
 
           {(mode === "new" || selectEvent) && (
             <div
               className="border border-gray-200 shadow
               rounded dark:border-gray-700"
             >
-
               {/* FORM TITLE */}
 
               <div className="p-4">
                 <h3 className="text-center text-xl font-semibold">
-
-                  {mode === "new"
-                    ? "Host An Event"
-                    : "Edit Event"}
-
+                  {mode === "new" ? "Host An Event" : "Edit Event"}
                 </h3>
               </div>
-
 
               {/* FORM */}
 
@@ -310,10 +276,7 @@ const CreateEvent = () => {
                 onSubmit={handleSubmit}
                 className="flex flex-col ml-2 gap-3 mr-2"
               >
-
-
                 <div className="flex flex-col">
-
                   <label
                     className="text-gray-700 font-semibold p-1
                     dark:text-white"
@@ -331,13 +294,9 @@ const CreateEvent = () => {
                     onChange={handleChange}
                     required
                   />
-
                 </div>
 
-
-
                 <div className="flex flex-col">
-
                   <label
                     className="text-gray-700 font-semibold p-1
                     dark:text-white"
@@ -354,13 +313,9 @@ const CreateEvent = () => {
                     onChange={handleChange}
                     rows="4"
                   />
-
                 </div>
 
-
-
                 <div className="flex flex-col">
-
                   <label
                     className="text-gray-700 font-semibold p-1
                     dark:text-white"
@@ -386,10 +341,7 @@ const CreateEvent = () => {
                       Leave empty to keep the existing poster.
                     </p>
                   )}
-
                 </div>
-
-
 
                 <div
                   className="bg-gray-100 p-2 text-lg font-light text-center
@@ -398,13 +350,10 @@ const CreateEvent = () => {
                   Venue Details
                 </div>
 
-
                 <div className="grid grid-cols-2 gap-4">
-
                   {/* VENUE */}
 
                   <div className="flex flex-col">
-
                     <label
                       className="text-gray-700 font-semibold p-1
                       dark:text-white"
@@ -422,14 +371,11 @@ const CreateEvent = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
-
 
                   {/* DATE */}
 
                   <div className="flex flex-col">
-
                     <label
                       className="text-gray-700 font-semibold p-1
                       dark:text-white"
@@ -446,14 +392,11 @@ const CreateEvent = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
-
 
                   {/* START TIME */}
 
                   <div className="flex flex-col">
-
                     <label
                       className="text-gray-700 font-semibold p-1
                       dark:text-white"
@@ -469,14 +412,11 @@ const CreateEvent = () => {
                       value={formData.startTime}
                       onChange={handleChange}
                     />
-
                   </div>
-
 
                   {/* END TIME */}
 
                   <div className="flex flex-col">
-
                     <label
                       className="text-gray-700 font-semibold p-1
                       dark:text-white"
@@ -492,12 +432,8 @@ const CreateEvent = () => {
                       value={formData.endTime}
                       onChange={handleChange}
                     />
-
                   </div>
-
                 </div>
-
-
 
                 <div
                   className="bg-gray-100 text-center font-light text-lg p-2
@@ -506,13 +442,10 @@ const CreateEvent = () => {
                   Pricing & Seats
                 </div>
 
-
                 <div className="grid grid-cols-2 gap-4">
-
                   {/* PRICE */}
 
                   <div className="flex flex-col">
-
                     <label
                       className="text-gray-700 font-semibold p-1
                       dark:text-white"
@@ -531,14 +464,11 @@ const CreateEvent = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
-
 
                   {/* CAPACITY */}
 
                   <div className="flex flex-col">
-
                     <label
                       className="text-gray-700 font-semibold p-1
                       dark:text-white"
@@ -557,14 +487,11 @@ const CreateEvent = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
-
 
                   {/* AVAILABLE SEATS */}
 
                   <div className="flex flex-col">
-
                     <label
                       className="text-gray-700 font-semibold p-1
                       dark:text-white"
@@ -583,14 +510,11 @@ const CreateEvent = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
-
 
                   {/* CATEGORY */}
 
                   <div className="flex flex-col">
-
                     <label
                       className="text-gray-700 font-semibold p-1
                       dark:text-white"
@@ -608,14 +532,11 @@ const CreateEvent = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
-
                 </div>
-                    {/* submit */}
+                {/* submit */}
 
                 <div className="flex justify-center gap-3 mt-3">
-
                   <button
                     type="submit"
                     disabled={status === "loading"}
@@ -626,19 +547,14 @@ const CreateEvent = () => {
                     {status === "loading"
                       ? "Processing..."
                       : mode === "new"
-                      ? "Create Event"
-                      : "Update Event"}
+                        ? "Create Event"
+                        : "Update Event"}
                   </button>
-
                 </div>
-
               </form>
-
             </div>
           )}
-
         </div>
-
       </div>
     </div>
   );

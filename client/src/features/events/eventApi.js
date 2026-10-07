@@ -43,7 +43,7 @@ export const getMyEvents = createAsyncThunk(
         },
         withCredentials:true,
       })
-      console.log("res", res.data);
+      // console.log("res", res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(
@@ -123,3 +123,29 @@ export const getEventById = createAsyncThunk(
     }
   },
 );
+
+
+export const deleteEvent = createAsyncThunk(
+  "events/deleteEvent",
+  async(eventId, {rejectWithValue}) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await api.delete(`/event/delete/${eventId}`, {
+        headers:{
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials:true,
+      })
+      toast.success("Event deleted successfully")
+      console.log("res del", res);
+      return res.data;
+      
+    } catch (error) {
+      console.log("delete event error:", error);
+      toast.error("Event delete failed!!")
+      return rejectWithValue(
+        error.response?.data?.message || ""
+      )
+    }
+  }
+)

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -83,11 +84,12 @@ const EventDetails = () => {
         </div>
 
         <div className="flex  justify-center">
+          <Link to="/booking">
         <button className="bg-red-600 px-4 py-2 rounded text-white
          hover:bg-red-500 font-bold w-xs lg:w-3xl md:w-2xl">
           Book a seat
         </button>
-
+          </Link>
       </div>
         
       </div>

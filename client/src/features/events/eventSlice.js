@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getEventById, getEvents, getMyEvents, registerEvent, updateEvent } from "./eventApi.js";
+import { deleteEvent, getEventById, getEvents, getMyEvents, registerEvent, updateEvent } from "./eventApi.js";
 
 const initialState = {
   events: [],
@@ -93,6 +93,23 @@ export const eventSlice = createSlice({
       })
       .addCase(getMyEvents.rejected, (state, action) => {
         state.status= "failed";
+        state.error = action.payload;
+      })
+
+      // delete
+      .addCase(deleteEvent.pending, (state)=> {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(deleteEvent.fulfilled, (state, action)=> {
+        state.status="succeeded";
+        state.myEvents = state.myEvents.filter(
+          (event) => event._id !== action.payload.event._id
+        )
+        state.error = null;
+      })
+      .addCase(deleteEvent.rejected, (state, action) =>{
+        state.status = "failed";
         state.error = action.payload;
       })
   },
