@@ -37,19 +37,3 @@ export const loginUser = createAsyncThunk(
   },
 );
 
-export const refreshToken = createAsyncThunk(
-  "auth/refreshToken",
-  async (_, { rejectWithValue }) => {
-    try {
-      const refreshToken = localStorage.getItem("refreshToken");
-      const res = await api.post("/auth/refresh", { refreshToken });
-
-      localStorage.setItem("token", res.data.accessToken);
-      return res.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Token refreh failed",
-      );
-    }
-  },
-);

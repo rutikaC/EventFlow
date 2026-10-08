@@ -16,8 +16,12 @@ const EventDetails = () => {
     dispatch(getEventById(eventId));
   },[dispatch, eventId]);
 
-  if(status === "loading") return <p>Loading events...</p>
-  if(status === "failed") return  <p>Error: {error}</p>
+  if(status === "loading") return <p className='text-2xl text-center font-bold'>
+    Loading events...
+    </p>
+  if(status === "failed") return  <p className='text-3xl flex items-center justify-center text-red-600 font-bold'>
+    Error: {error}
+    </p>
   if (!event) return <p>No event found</p>
   return (
 
@@ -84,7 +88,7 @@ const EventDetails = () => {
         </div>
 
         <div className="flex  justify-center">
-          <Link to="/booking">
+          <Link to={`/booking/${event._id}`}>
         <button className="bg-red-600 px-4 py-2 rounded text-white
          hover:bg-red-500 font-bold w-xs lg:w-3xl md:w-2xl">
           Book a seat

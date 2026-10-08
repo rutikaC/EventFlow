@@ -171,7 +171,7 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/booking" 
+              <NavLink to={`/booking/${eventId}`}
               onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
                 isActive

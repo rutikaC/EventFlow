@@ -7,6 +7,7 @@ export const bookEvent = async(req, res) => {
         // get data
 
         const {eventId} = req.params;
+        console.log("eventId", eventId);
         const  userId = req.user.id;
         const {quantity,bookingStatus,paymentStatus} = req.body;
 
@@ -45,8 +46,8 @@ export const bookEvent = async(req, res) => {
             event:eventId,
             quantity,
             amount: event.price * quantity,
-            paymentStatus,
-            bookingStatus,
+            paymentStatus:paymentStatus || "pending",
+            bookingStatus:bookingStatus || "Pending",
             paymentId:order.id
         })
 

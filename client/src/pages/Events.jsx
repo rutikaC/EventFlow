@@ -12,8 +12,12 @@ const Events = () => {
     dispatch(getEvents());
   },[dispatch]);
 
-  if(status === "loading") return <p>Loading events...</p>
-  if(status === "failed") return  <p>Error: {error}</p>
+  if(status === "loading") return <p  className="text-3xl text-center font-bold ">
+    Loading events please wait...
+    </p>
+  if(status === "failed") return  <p className='text-3xl flex items-center justify-center text-red-600 font-bold'
+  >
+    Error: {error}</p>
   return (
     <div className="flex flex-col justify-center items-center
     dark:bg-gray-900 dark:text-white">

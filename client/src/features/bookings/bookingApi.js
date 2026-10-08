@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../../services/api.js";
 
 
 export const createBooking = createAsyncThunk(
@@ -25,3 +26,33 @@ export const createBooking = createAsyncThunk(
   }
 );
 
+export const getMyBookings = createAsyncThunk(
+  "bookings/getMyBookings",
+  async(_ , {rejectWithValue}) => {
+    try {
+      const res = await api.get("/book/my-bookings", 
+        {withCredentials: true}
+      )
+       return res.data.bookings;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message 
+        || "Failed to fetch bookings")
+    }
+  }
+)
+
+export const getBookingById = createAsyncThunk(
+  "bookings/getBookingsById",
+  async(_ , {rejectWithValue}) => {
+    try {
+      const res = await api.get(`/book/booking/${bookingId}`, 
+        {withCredentials: true}
+      )
+      return res.data.booking;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message 
+       || "Failed to fetch bookings"
+      )
+    }
+  }
+)
