@@ -264,7 +264,7 @@ const CreateEvent = () => {
             >
               {/* FORM TITLE */}
               <div className="text-center font-light bg-red-50 shadow- border border-red-50
-               dark:bg-gray-500 dark:border-gray-500">
+               dark:bg-gray-600 dark:border-gray-500">
                 New AI-powered Event Description Generator.
               </div>
 

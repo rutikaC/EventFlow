@@ -66,7 +66,7 @@ const Navbar = () => {
       {/* list */}
 
       <div className=" hidden md:flex ">
-        <ul className="flex gap-6  text-lg items-center">
+        <ul className="flex gap-6 font-serif text-lg items-center">
           <li>
             <NavLink
               to="/events"
@@ -186,7 +186,7 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to={`/booking/${eventId}`}
+              <NavLink to={`/booking`}
               onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
                 isActive
