@@ -89,8 +89,8 @@ const EventDetails = () => {
 
         <div className="flex  justify-center">
           <Link to={`/booking/${event._id}`}>
-        <button className="bg-red-600 px-4 py-2 rounded text-white
-         hover:bg-red-500 font-bold w-xs lg:w-3xl md:w-2xl">
+        <button className="bg-red-600 px-4 py-2 m-4 rounded text-white
+         hover:bg-red-500 font-bold w-xs lg:w-2xl ">
           Book a seat
         </button>
           </Link>

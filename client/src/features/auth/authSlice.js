@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loginUser, registerUser } from "./authApi";
 
+
 const initialState = {
-  user: null,
+  user: JSON.parse(localStorage.getItem("user")) || null,
   accessToken: localStorage.getItem("token") || null,
   status: "idle",
   error: null,
@@ -21,6 +22,7 @@ export const authSlice = createSlice({
         state.status = "succeeded";
         state.user = action.payload.user;
         state.accessToken = action.payload.accessToken;
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
         localStorage.setItem("token", action.payload.accessToken);
         state.error = null;
       })
@@ -38,6 +40,7 @@ export const authSlice = createSlice({
         state.status = "succeeded";
         state.user = action.payload.user;
         state.accessToken = action.payload.accessToken;
+       localStorage.setItem("user", JSON.stringify(action.payload.user));
         localStorage.setItem("token", action.payload.accessToken);
         state.error = null;
       })

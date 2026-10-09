@@ -146,7 +146,7 @@ const CreateEvent = () => {
           className="border border-gray-200 shadow w-1/4 min-h-screen
           dark:border-gray-700 dark:bg-gray-900"
         >
-          <h2 className="font-light text-xl text-center p-5">
+          <h2 className="font-serif text-red-500 text-xl text-center p-5">
             Event Management
           </h2>
 
@@ -263,6 +263,10 @@ const CreateEvent = () => {
               rounded dark:border-gray-700"
             >
               {/* FORM TITLE */}
+              <div className="text-center font-light bg-red-50 shadow- border border-red-50
+               dark:bg-gray-500 dark:border-gray-500">
+                New AI-powered Event Description Generator.
+              </div>
 
               <div className="p-4">
                 <h3 className="text-center text-xl font-semibold">

@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createBooking, getMyBookings , getBookingById } from "./bookingApi";
+import { createBooking, getMyBookings , getBookingById, verifyPayment } from "./bookingApi";
 console.log({ createBooking, getMyBookings, getBookingById });
 
 
  const initialState ={
     booking: null,  
     bookings: [],
+    order:null,
     status: "idle",
     error: null,
 }
@@ -34,6 +35,22 @@ export const bookingSlice = createSlice({
             state.error = null;
         })
         .addCase(createBooking.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload;
+        })
+
+        // vefiytpayment
+
+        .addCase(verifyPayment.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        })
+        .addCase(verifyPayment.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.booking = action.payload.booking;
+            state.error =  null;
+        })
+        .addCase(verifyPayment.rejected, (state, action) => {
             state.status = "failed";
             state.error = action.payload;
         })

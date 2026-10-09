@@ -1,11 +1,18 @@
 import React, { useEffect } from 'react'
 import EventCard from '../components/EventCard'
 import { useDispatch, useSelector } from 'react-redux'
-import { getEvents } from '../features/events/eventApi';
+import { getEvents } from '../features/events/eventApi.js';
+import { useSearchParams } from "react-router-dom";
 
 const Events = () => {
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
   const {events = [], status, error} = useSelector((state) => state.events);
+
+  const search = searchParams.get("search")?.toLowerCase() || "";
+
+  const filteredEvents = events.filter((event)=> 
+  event.title?.toLowerCase().includes(search))
 
  console.log("Events data:", events)
   useEffect(() => {
@@ -30,10 +37,15 @@ const Events = () => {
        </div>
 
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => (
-
-            <EventCard key={event._id} event={event} />
-          ))}
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event) => (
+              <EventCard key={event._id} event={event} />
+          ))
+        ):(
+          <p className="col-span-full text-center text-gray-500 py-8">
+            No event found.
+          </p>
+        )}
        </div>
     </div>
   )

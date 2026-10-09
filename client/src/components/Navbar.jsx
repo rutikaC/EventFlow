@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { IoIosSearch } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdClose } from "react-icons/io";
@@ -11,12 +11,23 @@ import Register from "../pages/Register";
 import Login from "../pages/Login";
 import Modal from "../components/Modal";
 
+
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [login , setLogin] = useState(false);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/events?search=${search}`);
+    setSearch("")
+  }
 
   return (
     <div
@@ -33,20 +44,24 @@ const Navbar = () => {
       </div>
 
       {/* search bar */}
-      <div className="m-1 md:block relative w-full max-w-sm">
+      <form onSubmit={handleSearch}
+      className="m-1 md:block relative w-full max-w-sm">
         <span className="hidden  absolute inset-y-0 right-3 md:flex items-center text-gray-500">
           <IoIosSearch />
         </span>
         <input
+
           className=" text-sm w-xsm md:w-sm p-2 border border-gray-200 
             bg-gray-50 focus:outline-none rounded shadow
             dark:bg-gray-900 dark:border-gray-700 dark:text-white
             dark:shadow
             "
           placeholder="Search Events Here..."
-          type="text"
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
-      </div>
+      </form>
 
       {/* list */}
 
@@ -78,7 +93,7 @@ const Navbar = () => {
           </li>
           <li>
             <NavLink
-            to="/about"
+            to="/account"
             className={({ isActive }) =>
                 isActive
                   ? "text-red-600 font-semibold"
@@ -86,7 +101,7 @@ const Navbar = () => {
                  
               }
               >
-              About
+              Account
             </NavLink>
           </li>
           <li>
@@ -184,7 +199,7 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/events" 
+              <NavLink to="/account" 
               onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
                 isActive
@@ -193,7 +208,7 @@ const Navbar = () => {
                  
               }
               >
-                About
+                Account
               </NavLink>
             </li>
             <li>

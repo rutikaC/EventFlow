@@ -1,13 +1,14 @@
 import { Booking } from "../models/Booking.models.js";
 import {Event} from "../models/Event.models.js"
 import { razorpayPayment } from "../utils/razorpay.utils.js";
+import crypto from "crypto";
 
 export const bookEvent = async(req, res) => {
     try {
         // get data
 
         const {eventId} = req.params;
-        console.log("eventId", eventId);
+       console.log("Booking eventId:", eventId);
         const  userId = req.user.id;
         const {quantity,bookingStatus,paymentStatus} = req.body;
 
@@ -39,21 +40,7 @@ export const bookEvent = async(req, res) => {
             currency:"INR",
             receipt:`receipt_${Date.now()}`,
         })
-        // create booking
-
-        const booking = await Booking.create({
-            user:userId,
-            event:eventId,
-            quantity,
-            amount: event.price * quantity,
-            paymentStatus:paymentStatus || "pending",
-            bookingStatus:bookingStatus || "Pending",
-            paymentId:order.id
-        })
-
-        // reduces seats
-        event.availableSeats -= quantity;
-        await event.save();
+        
 
         // return res
         return res.status(201)
@@ -61,7 +48,9 @@ export const bookEvent = async(req, res) => {
             success:true,
             message:"Booking successfully",
             order,
-            booking
+            eventId,
+            quantity,
+            amount
         })
     } catch (error) { 
         console.log(`Book Event error: ${error.message}`);
@@ -73,6 +62,96 @@ export const bookEvent = async(req, res) => {
     }
 }
 
+
+export const verifyPayment = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      eventId,
+      quantity,
+    } = req.body;
+
+    // 1. Verify Razorpay signature
+    const generatedSignature = crypto
+      .createHmac(
+        "sha256",
+        process.env.RAZORPAY_KEY_SECRET
+      )
+      .update(
+        razorpay_order_id +
+        "|" +
+        razorpay_payment_id
+      )
+      .digest("hex");
+
+    if (generatedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment verification failed",
+      });
+    }
+
+    // 2. Find event
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    // 3. Check seats again
+    if (event.availableSeats < quantity) {
+      return res.status(400).json({
+        success: false,
+        message: "Seats are no longer available",
+      });
+    }
+
+    // 4. Calculate amount
+    const amount = event.price * quantity;
+
+    // 5. CREATE BOOKING
+    const booking = await Booking.create({
+      user: userId,
+      event: eventId,
+      quantity: quantity,
+      amount: amount,
+      paymentStatus: "paid",
+      bookingStatus: "confirmed",
+      paymentId: razorpay_payment_id,
+      ticketId: `TICKET-${Date.now()}`,
+    });
+
+    // 6. Reduce seats
+    event.availableSeats -= quantity;
+
+    await event.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment verified and booking confirmed",
+      booking,
+    });
+
+  } catch (error) {
+
+    console.log(
+      "Payment verification error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Payment verification failed",
+    });
+  }
+};
 
 export const getMyBooking = async(req, res) => {
     try {
@@ -90,7 +169,7 @@ export const getMyBooking = async(req, res) => {
         // fing bookin
 
         const bookings = await Booking.find({user: userId})
-        .populate("event", "title date price")
+        .populate("event", "title date price venue image startTime endTime")
         .sort({createdAt: -1})
 
         // validate
