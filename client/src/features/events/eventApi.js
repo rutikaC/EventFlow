@@ -8,20 +8,19 @@ export const registerEvent = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      console.log("token", token);
+      
       const res = await api.post("/event/register", formData, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data", // ✅ fixed
+          "Content-Type": "multipart/form-data", 
         },
       });
-      console.log("res", res);
-      toast.success("Event Registered successfully");
+    
       return res.data;
     } catch (error) {
       console.error("Registration error:", error.response?.data);
-      toast.error("Event registration failed");
+     
       return rejectWithValue(
         error.response?.data?.message || "Event registration failed",
       );

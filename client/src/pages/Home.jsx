@@ -3,16 +3,17 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       
       {/* Hero Section */}
-      <section className="bg-gray-900 text-white">
+      <section className="bg-gray-50 dark:text-white
+      dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-6 py-20 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Discover Amazing Events
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+          <p className="text-lg md:text-xl dark:text-gray-300 max-w-2xl mx-auto mb-8">
             Find exciting events, book your seats, and create unforgettable
             experiences with EventFlow.
           </p>

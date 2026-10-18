@@ -32,7 +32,7 @@ export const loginUser = createAsyncThunk(
       return res.data;
     } catch (error) {
       toast.error("Login failed");
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   },
 );

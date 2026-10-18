@@ -24,7 +24,7 @@ const Events = () => {
     </p>
   if(status === "failed") return  <p className='text-3xl flex items-center justify-center text-red-600 font-bold'
   >
-    Error: {error}</p>
+  Please login to continue...</p>
   return (
     <div className="flex flex-col justify-center items-center
     dark:bg-gray-900 dark:text-white">

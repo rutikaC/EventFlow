@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 import { deleteEvent, getEventById, getEvents, getMyEvents, registerEvent, updateEvent } from "./eventApi.js";
 
 const initialState = {
@@ -56,9 +57,19 @@ export const eventSlice = createSlice({
         state.error = null;
       })
       .addCase(registerEvent.fulfilled, (state, action) => {
+          console.log("registerEvent payload:", action.payload); 
         state.status= "success";
         state.event = action.payload.event;
         state.error = null;
+
+        if (action.payload.event) {
+        toast.success("Register Successfully");
+      } else {
+        toast.error(action.payload.message || "Registration failed");
+      }
+       if (action.payload.event && action.payload.success === false) {
+      toast.info("Event created, description will be added later");
+  }
       })
       .addCase(registerEvent.rejected, (state,action) => {
         state.status = "failed";

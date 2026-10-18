@@ -50,7 +50,7 @@ export const registerUser = async (req, res) => {
   const safeUser = await User.findById(user._id).select("-password -refreshToken");
 
     // store cookie
-    res.cookies("refreshToken", refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite:
