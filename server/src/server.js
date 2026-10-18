@@ -36,8 +36,8 @@ app.use("/api/v1/ai", aiRoutes);
 app.use("/api/v1/book", bookingRoutes);
 app.use("/api/v1/review", reviewRoutes);
 
-const port = process.env.port || 5000;
+const port = process.env.PORT || 5000;
 
-app.listen(5000, () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`App is runing on ${port}`);
 });
