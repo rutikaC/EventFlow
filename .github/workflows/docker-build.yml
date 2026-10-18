@@ -1,0 +1,35 @@
+
+name: EventFlow Docker Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./server
+          push: false
+          tags: eventflow-backend:latest
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./client
+          push: false
+          tags: eventflow-frontend:latest
