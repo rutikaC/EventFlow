@@ -10,6 +10,7 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0',
-    allowedHosts: ['eventflow-frontend-4lsd.onrender.com']
+    allowedHosts: ['eventflow-frontend-4lsd.onrender.com'],
+    hmr: false
   }
 })
